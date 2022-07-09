@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-class Watcher(): 
+class MongoDbWatcher(): 
     def __init__(self, uri) -> None:
         self.client = MongoClient(uri)
         self.change_stream = None

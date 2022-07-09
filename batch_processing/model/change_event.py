@@ -1,8 +1,7 @@
-from tkinter import N
 from bson.objectid import ObjectId
 from dataclasses import dataclass, field
 import datetime
-
+import helper
 
 @dataclass
 class TokenId:
@@ -48,6 +47,12 @@ class ChangeEvent:
     updateDescription: UpdateDescription = field(default=None)
     fullDocument: dict = field(default=None)
     removeFields: list = field(default=None)
+
+    def get_unique_identity(self):
+        db = self.ns.db
+        coll = self.ns.coll
+        doc_id = str(self.documentKey._id)
+        return helper.join_strings(db, coll, doc_id)
 
     def __init__(self, **kwargs) -> None:
         self._id = TokenId(kwargs.get("_id", {}).get("_data", {}))

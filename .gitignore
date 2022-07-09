@@ -1,5 +1,4 @@
 .vscode/
 docker_volume/
 *.pyc
-.env
-*/__pycache__/*
+logs/*
