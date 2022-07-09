@@ -1,0 +1,5 @@
+.vscode/
+docker_volume/
+*.pyc
+.env
+*/__pycache__/*

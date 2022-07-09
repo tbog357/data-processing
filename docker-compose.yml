@@ -1,0 +1,80 @@
+version: "3"
+services:
+  mongo_1:
+    container_name: mongo_1
+    hostname: mongo_1
+    domainname: mongo_1
+    image: mongo
+    ports:
+      - 27011:27011
+    volumes:
+      - ./docker_volume/mongo_1:/data/db
+    command:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "rs0",
+        "--port",
+        "27011",
+      ]
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.1
+    links:
+      - "mongo_2:mongo_2"
+      - "mongo_3:mongo_3"
+
+  mongo_2:
+    container_name: mongo_2
+    hostname: mongo_2
+    domainname: mongo_2
+    image: mongo
+    ports:
+      - 27012:27012
+    volumes:
+      - ./docker_volume/mongo_2:/data/db
+    command:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "rs0",
+        "--port",
+        "27012",
+      ]
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.2
+    links:
+      - "mongo_3:mongo_3"
+
+  mongo_3:
+    container_name: mongo_3
+    hostname: mongo_3
+    domainname: mongo_3
+    image: mongo
+    ports:
+      - 27013:27013
+    volumes:
+      - ./docker_volume/mongo_3:/data/db
+    command:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "rs0",
+        "--port",
+        "27013",
+      ]
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.3
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          #docker-compose v3+ do not use ip_range
+          ip_range: 172.28.5.0/24
