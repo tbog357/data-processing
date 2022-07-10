@@ -23,11 +23,11 @@ class SinkConnector():
         # Postgres
         self.postgres_client = PostgresClient(uri=os.environ.get(const.ENV_POSTGRES_URI))
 
-        # Event config
+        # Event control
         self.queue = []
         self.failed_event = {}
 
-        # parser
+        # Parser
         self.parser = parser
 
         # Logger
@@ -43,7 +43,7 @@ class SinkConnector():
     def pull_event_from_postgres(self):
         """ Pull change event from postgres """
         self.logger.info("Pulling event from postgres")
-        time.sleep(10)
+        helper.delay(seconds=10)
 
     def process_event(self):
         """ Process events from queue """
@@ -69,7 +69,7 @@ class SinkConnector():
             self.logger.error({"failed_event": failed_event})
             
         # Wait for logger write all logs
-        helper.delay(5)
+        helper.delay(seconds=5)
         sys.exit(0)
 
 if __name__ == "__main__":

@@ -49,27 +49,34 @@ class ChangeEvent:
     removeFields: list = field(default=None)
 
     def get_unique_identity(self):
+        """ Get tracking source identity """
         db = self.ns.db
         coll = self.ns.coll
         doc_id = str(self.documentKey._id)
-        return helper.join_strings(db, coll, doc_id)
+        return helper.join_strings_by_vertical_bar(db, coll, doc_id)
 
     def __init__(self, **kwargs) -> None:
+        """ Parse change event """
         self._id = TokenId(kwargs.get("_id", {}).get("_data", {}))
-
         self.operationType = kwargs.get("operationType", {})
 
-        db = kwargs.get("ns", {}).get("db", {})
-        coll = kwargs.get("ns", {}).get("coll", {})
-        self.ns = Ns(db, coll)
+        ns = kwargs.get("ns", {})
+        self.ns = Ns(ns.get("db", {}), ns.get("coll", {}))
 
-        self.documentKey = DocumentKey(
-            kwargs.get("documentKey", {}).get("_id", {})
-        )
+        documentKey = kwargs.get("documentKey", {})
+        self.documentKey = DocumentKey(documentKey.get("_id", {}))
 
-        self.updateDescription = UpdateDescription(
-            kwargs.get("updateDescription", {}).get("updateFields", {})
-        )
+        updateDescription = kwargs.get("updateDescription", {})
+        self.updateDescription = UpdateDescription(updateDescription.get("updateFields", {}))
 
         self.fullDocument = kwargs.get("fullDocument", {})
         self.removeFields = kwargs.get("removeFields", [])
+
+    def to_dict(self):
+        return {
+            "token_id": self._id._data,
+            "operation_type": self.operationType,
+            "database": self.ns.db,
+            "collection": self.ns.coll,
+            "document_id": self.documentKey._id
+        }

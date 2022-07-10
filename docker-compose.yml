@@ -2,8 +2,6 @@ version: "3"
 services:
   mongo_1:
     container_name: mongo_1
-    hostname: mongo_1
-    domainname: mongo_1
     image: mongo
     ports:
       - 27011:27011
@@ -20,15 +18,13 @@ services:
       ]
     networks:
       static-network:
-        ipv4_address: 172.20.128.1
+        ipv4_address: "$MONGO_1_IP"
     links:
       - "mongo_2:mongo_2"
       - "mongo_3:mongo_3"
 
   mongo_2:
     container_name: mongo_2
-    hostname: mongo_2
-    domainname: mongo_2
     image: mongo
     ports:
       - 27012:27012
@@ -45,14 +41,12 @@ services:
       ]
     networks:
       static-network:
-        ipv4_address: 172.20.128.2
+        ipv4_address: "$MONGO_2_IP"
     links:
       - "mongo_3:mongo_3"
 
   mongo_3:
     container_name: mongo_3
-    hostname: mongo_3
-    domainname: mongo_3
     image: mongo
     ports:
       - 27013:27013
@@ -69,7 +63,20 @@ services:
       ]
     networks:
       static-network:
-        ipv4_address: 172.20.128.3
+        ipv4_address: "$MONGO_3_IP"
+
+  pg_main_db:
+    image: postgres
+    container_name: pg_main_db
+    ports:
+      - 5431:5431
+    volumes:
+      - ./docker_volume/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=admin
+    networks:
+      static-network:
+        ipv4_address: "$POSTGRES_IP"
 
 networks:
   static-network:

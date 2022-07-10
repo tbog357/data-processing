@@ -6,9 +6,9 @@ import signal
 # local import
 import const
 import helper
+from core.logger import setup_logger
 from core.mongodb_watcher import MongoDbWatcher
 from core.postgres_client import PostgresClient
-from core.logger import setup_logger
 from model.change_event import ChangeEvent
 
 
@@ -45,11 +45,11 @@ class SourceConnector():
     
     # Sub-main functions
     def get_next_event(self):
-        """ Get next change event from change stream"""
+        """ Get next change event from change stream """
         return self.change_stream.try_next()
 
     def add_event_to_queue(self, event):
-        """ Add change event to queue"""
+        """ Add change event to queue """
         if event != const.NO_EVENT:
             self.queue.append(ChangeEvent(**event))
 
@@ -68,7 +68,7 @@ class SourceConnector():
             return False
 
     def push_event_to_postgres(self):
-        """ Push all change events in queue to postgres"""
+        """ Push all change events in queue to postgres """
         if len(self.queue) > 0:
             self.logger.info(f"Push {len(self.queue)} events to postgres")
         else:
@@ -78,7 +78,7 @@ class SourceConnector():
         self.kill_signal_received = True
         # Close change stream and wait for it fully closed
         self.watcher.stop_change_stream()
-        helper.delay(5)
+        helper.delay(seconds=5)
 
         # Push remaining event to postgres
         self.logger.info("Push remaining events to postgres")
@@ -88,7 +88,7 @@ class SourceConnector():
         self.logger.info("Saving change stream checkpoint")
         
         # Wait for logger write all logs
-        helper.delay(5)
+        helper.delay(seconds=5)
         sys.exit(0)
 
 if __name__ == "__main__":

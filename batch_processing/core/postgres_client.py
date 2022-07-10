@@ -1,16 +1,17 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Table, MetaData
+from sqlalchemy.orm import Session
+from sqlalchemy import Table
 
 class PostgresClient():
     def __init__(self, uri) -> None:
-        self.client = create_engine(uri)
-        self.db = self.client.connect()
-
-    def create_table(self, table, cols):
-        meta = MetaData()
-        table = Table(table, meta, *cols)
-        meta.create_all()    
-
+        self.engine = create_engine(uri)
+        
+    def insert_many(self, table, columns, values):
+        with Session(self.engine) as session:
+            mapping = Table(table, *columns)
+            session.bulk_insert_mappings(mapping, values)
+            session.commit()
+        
     
 
     
