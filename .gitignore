@@ -1,4 +1,12 @@
+# IDE settings
 .vscode/
+
+# docker data
 docker_volume/
+
+# complied python code
 *.pyc
-logs/*
+
+# logs
+batch_processing/logs/*
+stream_processing/logs/*
