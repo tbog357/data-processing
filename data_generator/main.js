@@ -17,8 +17,10 @@ async function main() {
 main().catch(console.error);
 
 async function generateSampleData(client) {
-  const result = await client.db("ecommerce").collection("listings").insertOne({
-    name: "testing",
-  });
-  console.log(result.insertedId);
+  while (true) {
+    const result = await client.db("ecommerce").collection("listings").insertOne({
+      name: "testing",
+    });
+    console.log(result.insertedId);
+  }
 }
